@@ -96,8 +96,10 @@ namespace KaupischIT.CardReader
 			using (StreamReader streamReader = new StreamReader(gzipStream,Encoding.GetEncoding("ISO-8859-15"))) /// ...ISO-8859-15 codiertes..
 			{
 				// ...XML-Dokument abgelegt
-				string xmlContent = streamReader.ReadToEnd(); 
+				string xmlContent = streamReader.ReadToEnd();
+#if DEBUG
 				Debug.WriteLine(xmlContent);
+#endif
 
 				// XML-Daten gemäß vorgegebenem XML-Schema deserialisieren
 				XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
