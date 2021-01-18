@@ -78,7 +78,7 @@ namespace KaupischIT.CardReader
 		/// <param name="command">Chipkarten- bzw. Kartenterminal-Kommando</param>
 		/// <returns>eine Bytefolge mit der Antwort auf das Kommando</returns>
 		[DebuggerStepThrough]
-		private byte[] ExecuteCommand(byte dad,byte sad,byte[] command)
+		public byte[] ExecuteCommand(byte dad,byte sad,byte[] command)
 		{
 			ushort responseLength = UInt16.MaxValue;
 			byte[] response = new byte[responseLength];

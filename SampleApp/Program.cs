@@ -8,7 +8,7 @@ namespace KaupischIT.CardReader
 		static void Main()
 		{
 			// Verbindung mit einem Chipkartenterminal herstellen und (falls eingesteckt) die Versichertenstammdaten einer eGK oder KVK/PKV-Card auslesen
-			CardResult result = CardTerminalClient.ReadCard("ctacs.dll");
+			CardResult result = CardTerminalClient.ReadCard("ctcym.dll");
 			if (result.Success)
 			{
 				// die ausgelesenen Versichertenstammdaten als JSON auf der Konsole ausgeben
