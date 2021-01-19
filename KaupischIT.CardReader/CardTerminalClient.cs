@@ -318,9 +318,9 @@ namespace KaupischIT.CardReader
 						0x00,0x00,
 						0x00 // Le (Expected Response Length)Number of bytes to be read. If Le = 00 or 000000 applies, the file is read through to its end, with Le = 00 having a maximum of 256 bytes. 
 					})
-				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, this.DebugSink);
+				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, DebugSink);
 
-			return new EgkResult(pdData,vdData);
+			return new EgkResult(pdData,vdData,DebugSink);
 		}
 
 
@@ -345,7 +345,7 @@ namespace KaupischIT.CardReader
 					})
 				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, this.DebugSink);
 
-			return new KvkResult(kvkData);
+			return new KvkResult(kvkData,DebugSink);
 		}
 
 

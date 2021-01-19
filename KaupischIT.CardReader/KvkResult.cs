@@ -11,14 +11,17 @@ namespace KaupischIT.CardReader
 	public class KvkResult
 	{
 		private readonly Dictionary<byte,string> values; // beinhaltet die ausgelesenen Schlüssel-Wert-Paare der KVK-Daten
-
+		
+		private CardTerminalClient.LogSink _debugSink;
 
 		/// <summary>
 		/// Initialisiert eine neue Instanz der KvkResult-Klasse und dekodiert die übergebenen Krankenversichertendaten
 		/// </summary>
 		/// <param name="bytes">die Rohdaten aus dem KVK-Template der Krankenversichertenkarte</param>
-		public KvkResult(byte[] bytes)
+		/// <param name="debugSink">Ausgabesenke fuer Debug-Informationen</param>
+		public KvkResult(byte[] bytes, CardTerminalClient.LogSink debugSink = null)
 		{
+			this._debugSink = debugSink;
 			this.values = this.Decode(bytes);
 		}
 

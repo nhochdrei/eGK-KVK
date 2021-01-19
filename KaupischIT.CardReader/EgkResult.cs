@@ -41,9 +41,9 @@ namespace KaupischIT.CardReader
 		/// <param name="debugSink">Ausgabesenke fuer Debug-Informationen</param>
 		public EgkResult(byte[] pdData,byte[] vdData, CardTerminalClient.LogSink debugSink = null)
 		{
+			this._debugSink = debugSink;
 			this.DecodePD(pdData);
 			this.DecodeVD(vdData);
-			this._debugSink = debugSink;
 		}
 
 
@@ -101,7 +101,7 @@ namespace KaupischIT.CardReader
 				// ...XML-Dokument abgelegt
 				string xmlContent = streamReader.ReadToEnd();
 #if DEBUG || DEBUG_LOG
-				if (this._debugSink != null) _debugSink(xmlContent);
+				this._debugSink?.Invoke(xmlContent);
 #endif
 
 				// XML-Daten gemäß vorgegebenem XML-Schema deserialisieren

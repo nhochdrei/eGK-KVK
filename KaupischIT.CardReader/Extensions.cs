@@ -67,10 +67,10 @@ namespace KaupischIT.CardReader
 					(generalStatusBytes.ContainsKey(statusBytes.Substring(0,3))) ? generalStatusBytes[statusBytes.Substring(0,3)] :
 					(generalStatusBytes.ContainsKey(statusBytes.Substring(0,2))) ? generalStatusBytes[statusBytes.Substring(0,2)] : responseStatus;
 
-				Debug.WriteLine(methodName.PadRight(12) + statusBytes + ((description!=null) ? " \t("+description+")" : ""));
+				debugSink(methodName.PadRight(12) + statusBytes + ((description!=null) ? " \t("+description+")" : ""));
 			}
 			else
-				Debug.WriteLine(methodName.PadRight(12)+"Response Trailer vorhanden");
+				debugSink(methodName.PadRight(12)+"Response Trailer vorhanden");
 #endif
 			return bytes;
 		}
