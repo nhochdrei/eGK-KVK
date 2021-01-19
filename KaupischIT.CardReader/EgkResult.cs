@@ -31,16 +31,19 @@ namespace KaupischIT.CardReader
 		/// </summary>
 		public GeschuetzteVersichertendaten GeschuetzteVersichertendaten { get; private set; }
 
+		private CardTerminalClient.LogSink _debugSink;
 
 		/// <summary>
 		/// Initialisiert eine neue Instanz der EgkResult-Klasse und dekodiert die übergebenen Versichertenstammdaten einer eGK
 		/// </summary>
 		/// <param name="pdData">die Rohdaten mit den Personendaten (PD)</param>
 		/// <param name="vdData">die Rohdaten mit den Allgemeinen Versicherungsdaten (VD) und den Geschützten Versichertendaten (GVD)</param>
-		public EgkResult(byte[] pdData,byte[] vdData)
+		/// <param name="debugSink">Ausgabesenke fuer Debug-Informationen</param>
+		public EgkResult(byte[] pdData,byte[] vdData, CardTerminalClient.LogSink debugSink = null)
 		{
 			this.DecodePD(pdData);
 			this.DecodeVD(vdData);
+			this._debugSink = debugSink;
 		}
 
 
@@ -97,8 +100,8 @@ namespace KaupischIT.CardReader
 			{
 				// ...XML-Dokument abgelegt
 				string xmlContent = streamReader.ReadToEnd();
-#if DEBUG
-				Debug.WriteLine(xmlContent);
+#if DEBUG || DEBUG_LOG
+				if (this._debugSink != null) _debugSink(xmlContent);
 #endif
 
 				// XML-Daten gemäß vorgegebenem XML-Schema deserialisieren

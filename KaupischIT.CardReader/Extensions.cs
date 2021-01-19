@@ -40,11 +40,16 @@ namespace KaupischIT.CardReader
 		/// </summary>
 		/// <param name="bytes">die Bytefolge, deren Trailer ein Zwei-Byte-Statuswort(SW1-SW2) beinhaltet, dessen Kodierung in Anlehnung an ISO 7816-4 erfolgt.</param>
 		/// <param name="specificReturnCodes">eine Auflistung spezifischer Status-Codes und deren Bedeutung</param>
+		/// <param name="debugSink">Ausgabesenke fuer Debuginformation</param>
 		/// <returns>die übergebene Bytefolge</returns>
-		public static byte[] CheckStatusBytes(this byte[] bytes,IDictionary<string,string> specificReturnCodes)
+		public static byte[] CheckStatusBytes(this byte[] bytes,IDictionary<string,string> specificReturnCodes,
+			CardTerminalClient.LogSink debugSink = null)
 		{
-#if DEBUG
-			// den Namen der Methode ermitteln, aus der die CheckStatusBytes-Methode aufgerufen wurde
+#if DEBUG || DEBUG_LOG
+			if (debugSink == null)
+				return bytes;
+
+				// den Namen der Methode ermitteln, aus der die CheckStatusBytes-Methode aufgerufen wurde
 			string methodName = new StackTrace().GetFrame(1).GetMethod().Name;
 
 			string statusBytes = bytes.GetStatusBytes();
