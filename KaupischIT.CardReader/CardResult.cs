@@ -22,26 +22,10 @@ namespace KaupischIT.CardReader
 		public bool Success
 			=> this.EgkResult!=null || this.KvKResult!=null;
 
-
-		/// <summary> Gibt die Bezeichnung und Ort der ausstellenden Krankenkasse/des ausstellenden Kostenträgers an. </summary>
-		public string KostentraegerName
-			=> this.KvKResult?.KrankenKassenName
-			?? this.EgkResult?.AllgemeineVersicherungsdaten?.Versicherter?.Versicherungsschutz?.Kostentraeger?.Name;
-
-		/// <summary> Gibt die Krankenkasse/den Kostenträger des Versicherten an. Es handelt sich um das bundesweit gültige Institutions-Kennzeichen (IK) des jeweiligen Kostenträgers. </summary>
-		public string Kostentraegerkennung
-			=> this.KvKResult?.KrankenKassenNummer
-			?? this.EgkResult?.AllgemeineVersicherungsdaten?.Versicherter?.Versicherungsschutz?.Kostentraeger?.Kostentraegerkennung;
-
 		/// <summary> Die Versicherten-ID ist der 10-stellige unveränderliche Teil der 30-stelligen Krankenversichertennummer. </summary>
 		public string VersichertenID
 			=> this.KvKResult?.VersichertenNummer 
 			?? this.EgkResult?.PersoenlicheVersichertendaten?.Versicherter?.Versicherten_ID;
-
-		/// <summary> Gibt die Versichertenart (Mitglied, Familienversicherter oder Rentner ) des Versicherten gemäß Schlüsseltabelle an. </summary>
-		public string Versichertenstatus
-			=> this.KvKResult?.VersichertenStatus
-			?? this.EgkResult?.AllgemeineVersicherungsdaten?.Versicherter?.Zusatzinfos.ZusatzinfosGKV?.Versichertenart;
 
 		/// <summary> Gibt die akademischen Grade der Person an, z.B. "Dr.". </summary>
 		public string Titel
@@ -96,11 +80,6 @@ namespace KaupischIT.CardReader
 		public string Ort
 			=> this.KvKResult?.OrtsName 
 			?? this.EgkResult?.PersoenlicheVersichertendaten?.Versicherter?.Person?.StrassenAdresse?.Ort;
-
-		/// <summary> Gibt bei befristeter Gültigkeit der Karte den Monat des Fristablaufs an. Üblich bei ausreichend langer Mitgliedschaft sind Gültigkeitsdauern von fünf bis zehn Jahren oder auch mehr. </summary>	
-		public string VersicherungsschutzEnde
-			=> this.KvKResult?.GültigkeitsDatum
-			?? this.EgkResult?.AllgemeineVersicherungsdaten?.Versicherter?.Versicherungsschutz?.Ende;
 
 
 		private static string Join(params string[] values)

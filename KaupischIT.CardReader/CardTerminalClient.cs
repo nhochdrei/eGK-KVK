@@ -239,7 +239,7 @@ namespace KaupischIT.CardReader
 						0xd2,0x76,0x00,0x00,0x01,0x02 // (Data field) File ID HCA 'D27600000102'
 						// Le (Expected Response Length)Empty or length of the expected response
 					})
-				.CheckStatusBytes(CardTerminalClient.selectFileStatusBytes,this.DebugSink);
+				.CheckStatusBytes(selectFileStatusBytes,this.DebugSink);
 		}
 
 
@@ -264,7 +264,7 @@ namespace KaupischIT.CardReader
 						0xd2,0x76,0x00,0x00,0x01,0x01 // (Data field) File ID KVK 'D27600000101'
 						// Le (Expected Response Length)Empty or length of the expected response
 					})
-				.CheckStatusBytes(CardTerminalClient.selectFileStatusBytes, this.DebugSink);
+				.CheckStatusBytes(selectFileStatusBytes, this.DebugSink);
 		}
 
 
@@ -300,27 +300,9 @@ namespace KaupischIT.CardReader
 						0x00,0x00,
 						0x00 // Le (Expected Response Length)Number of bytes to be read. If Le = 00 or 000000 applies, the file is read through to its end, with Le = 00 having a maximum of 256 bytes. 
 					})
-				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, this.DebugSink);
+				.CheckStatusBytes(readBinaryStatusBytes, this.DebugSink);
 
-			// allgemeine Versicherungsdaten (VD) lesen
-			byte[] vdData = this.ExecuteCommand(
-					sad: 2, // source = Host
-					dad: 0, // destination = Card
-					command: new byte[]
-					{
-						// READ BINARY (Insurance Data)
-						0x00, // CLA (Kommandosatz) '00'
-						0xb0, // INS (Befehl) 'B0' (= READ BINARY)
-						0x82, // P1 (Ausführungskontext) READ BINARY mit shortFileIdentifier: 128 + shortFileIdentifier, d.h. '80' + shortFileIdentifier (EF.VD = '02') 
-						0x00, // P2 (Command Qualifier) Offset
-						// Lc (Data Length) Empty
-						// (Data field) Empty
-						0x00,0x00,
-						0x00 // Le (Expected Response Length)Number of bytes to be read. If Le = 00 or 000000 applies, the file is read through to its end, with Le = 00 having a maximum of 256 bytes. 
-					})
-				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, DebugSink);
-
-			return new EgkResult(pdData,vdData,DebugSink);
+			return new EgkResult(pdData,DebugSink);
 		}
 
 
@@ -343,7 +325,7 @@ namespace KaupischIT.CardReader
 						0x00, // (P2)
 						0x00 // (Le)
 					})
-				.CheckStatusBytes(CardTerminalClient.readBinaryStatusBytes, this.DebugSink);
+				.CheckStatusBytes(readBinaryStatusBytes, this.DebugSink);
 
 			return new KvkResult(kvkData,DebugSink);
 		}

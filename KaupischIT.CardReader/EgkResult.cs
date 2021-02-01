@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using KaupischIT.CardReader.Egk.AllgemeineVersicherungsdaten;
-using KaupischIT.CardReader.Egk.GeschuetzteVersichertendaten;
 using KaupischIT.CardReader.Egk.PersoenlicheVersichertendaten;
 
 namespace KaupischIT.CardReader
@@ -21,29 +18,17 @@ namespace KaupischIT.CardReader
 		/// </summary>
 		public PersoenlicheVersichertendaten PersoenlicheVersichertendaten { get; private set; }
 
-		/// <summary>
-		/// Ruft die Allgemeinen Versicherungsdaten (VD) aus den Versichertenstammdaten einer eGK ab
-		/// </summary>
-		public AllgemeineVersicherungsdaten AllgemeineVersicherungsdaten { get; private set; }
-
-		/// <summary>
-		/// Ruft die Geschützten Versichertendaten (GVD) aus den Versichertenstammdaten einer eGK ab
-		/// </summary>
-		public GeschuetzteVersichertendaten GeschuetzteVersichertendaten { get; private set; }
-
 		private CardTerminalClient.LogSink _debugSink;
 
 		/// <summary>
 		/// Initialisiert eine neue Instanz der EgkResult-Klasse und dekodiert die übergebenen Versichertenstammdaten einer eGK
 		/// </summary>
 		/// <param name="pdData">die Rohdaten mit den Personendaten (PD)</param>
-		/// <param name="vdData">die Rohdaten mit den Allgemeinen Versicherungsdaten (VD) und den Geschützten Versichertendaten (GVD)</param>
 		/// <param name="debugSink">Ausgabesenke fuer Debug-Informationen</param>
-		public EgkResult(byte[] pdData,byte[] vdData, CardTerminalClient.LogSink debugSink = null)
+		public EgkResult(byte[] pdData, CardTerminalClient.LogSink debugSink = null)
 		{
 			this._debugSink = debugSink;
 			this.DecodePD(pdData);
-			this.DecodeVD(vdData);
 		}
 
 
@@ -58,34 +43,6 @@ namespace KaupischIT.CardReader
 			// ...und dann deserialisieren
 			this.PersoenlicheVersichertendaten = this.Decompress<PersoenlicheVersichertendaten>(compressedData);
 		}
-
-
-		private void DecodeVD(byte[] bytes)
-		{
-			// die Rohdaten beginnen mit jeweils 2 Bytes Offset für Start & Ende der eigentlichen Nutzdaten mit den allgemeinen Versicherungsdaten (VD)... 
-			int offsetStartVD = (bytes[0]<<8) + bytes[1];
-			int offsetEndVD = (bytes[2]<<8) + bytes[3];
-			// ...sowie je 2 Bytes Offset für Start & Ende der eigentlichen Nutzdaten mit den geschützten Versichertendaten (GVD)
-			int offsetStartGVD = (bytes[4]<<8) + bytes[5];
-			int offsetEndGVD = (bytes[6]<<8) + bytes[7];
-
-			// Nutzdaten mit den allgemeinen Versicherungsdaten (VD) extrahieren und deserialisieren
-			byte[] compressedDataVD = new byte[offsetEndVD-offsetStartVD];
-			if (compressedDataVD.Length>0)
-			{
-				Array.Copy(bytes,offsetStartVD,compressedDataVD,0,compressedDataVD.Length);
-				this.AllgemeineVersicherungsdaten = this.Decompress<AllgemeineVersicherungsdaten>(compressedDataVD);
-			}
-
-			// Nutzdaten mit den geschützten Versichertendaten (GVD) extrahieren und deserialisieren
-			byte[] compressedDataGVD = new byte[offsetEndGVD-offsetStartGVD];
-			if (compressedDataGVD.Length>0)
-			{
-				Array.Copy(bytes,offsetStartGVD,compressedDataGVD,0,compressedDataGVD.Length);
-				this.GeschuetzteVersichertendaten = this.Decompress<GeschuetzteVersichertendaten>(compressedDataGVD);
-			}
-		}
-
 
 		/// <summary>
 		/// Dekomprimiert und deserialisiert die ZIP-komprimierten XML-Nutzdaten (ISO-8859-15 codiert)
