@@ -64,9 +64,21 @@ namespace KaupischIT.CardReader
 				// XML-Daten gemäß vorgegebenem XML-Schema deserialisieren
 				XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
 				using (TextReader textReader = new StringReader(xmlContent))
-				using (XmlTextReader xmlTextReader = new XmlTextReader(textReader) { Namespaces = false }) // die verschiedenen Schema-Versionen (5.1, 5.2) haben unterschiedliche XML-Namespaces - diese hier ignorieren
+				using (XmlTextReader xmlTextReader = new SkipNamespaceReader(textReader)) // die verschiedenen Schema-Versionen (5.1, 5.2) haben unterschiedliche XML-Namespaces - diese hier ignorieren
 					return (T)xmlSerializer.Deserialize(xmlTextReader);
 			}
+		}
+
+		private sealed class SkipNamespaceReader : XmlTextReader
+		{
+			public SkipNamespaceReader(TextReader reader) : base(reader)
+			{
+				// Namespace-Support muss aktiviert bleiben, sonst kracht es bei z.B. mit IKK-karten
+				this.Namespaces = true;
+			}
+
+			// Namespace wird auf den Leerstring == kein NS hardcodiert
+			public override string NamespaceURI => String.Empty;
 		}
 	}
 }
